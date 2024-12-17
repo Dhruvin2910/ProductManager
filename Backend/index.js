@@ -14,9 +14,9 @@ let products = [];
 let currentId = 1; //initialized the starting ID
 
 
-const generateId = () => {
-    return currentId++; //return the current id and increment it
-}
+const { v4: uuidv4 } = require('uuid');
+const generateId = () => uuidv4(); // to generate unique id for each product
+
 
 // --- Routes ---
 
@@ -53,6 +53,14 @@ app.post('/products', (req, res) => {
             })
         }
 
+        //price validation
+        if (isNaN(price) || price <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid price!'
+            });
+        }
+        
         //create new product with generated ID
         const newProduct = {
             id: generateId(),
@@ -65,7 +73,7 @@ app.post('/products', (req, res) => {
         products.push(newProduct);
 
         //return success response
-        return res.status(200).json({
+        return res.status(201).json({
             success:true,
             message:'Product added successfully',
             data:newProduct
@@ -81,7 +89,41 @@ app.post('/products', (req, res) => {
     }
 })
 
+// 3. DELETE /products/:id - Delete a product by ID
+app.delete('/products/:id', (req, res) => {
+    try{
+        const { id } = req.params;
 
+        //find product by indexby id
+        const productIndex = products.findIndex((product) => product.id === id);
+
+        if(productIndex === -1){
+            //product not found, return error
+            return res.status(404).json({
+                success:false,
+                message:"Product not found"
+            });
+        }
+
+        //remove the product from the array
+        const deletedProduct = products.splice(productIndex, 1);
+
+        //return success response with deleted products
+        res.status(200).json({
+            success:true,
+            message:"Product deleted successfully",
+            data:deletedProduct[0]
+        });
+    }catch(err){
+         // Catch any unexpected server errors
+         console.log(err); // Log the error for debugging
+         res.status(500)
+             .json({
+                 success: false,
+                 message: "Internal server error"
+             })
+    }
+})
 
 app.get('/', (req, res) => {
     try {
