@@ -23,13 +23,15 @@ const generateId = () => {
 // 1. GET /products - Retrieve all products
 app.get('/products', (req, res) => {
     try{
+        // Return all products with a success response
         res.status(200).json({
             success: true,
             message: "Products retrieved successfully",
             data: products
         });
     }catch(err) {
-        console.log(err);
+         // Catch any unexpected server errors
+        console.log(err); // Log the error for debugging
         res.status(500)
             .json({
                 success: false,
@@ -38,8 +40,60 @@ app.get('/products', (req, res) => {
     }
 })
 
-app.get("/", (req, res) => {
-    res.send("Welcome to Product Manager!");
+// 2. POST /products - Add a new product
+app.post('/products', (req, res) => {
+    try{
+        const { name, price, category } = req.body;
+
+        //Input validation
+        if(!name || !price || !category){
+            return res.status(400).json({
+                success:false,
+                message:'Incomplete details!'
+            })
+        }
+
+        //create new product with generated ID
+        const newProduct = {
+            id: generateId(),
+            name,
+            price,
+            category
+        }
+
+        //Add the new product to in-memory array
+        products.push(newProduct);
+
+        //return success response
+        return res.status(200).json({
+            success:true,
+            message:'Product added successfully',
+            data:newProduct
+        })
+    }catch(err){
+         // Catch any unexpected server errors
+         console.log(err); // Log the error for debugging
+         res.status(500)
+             .json({
+                 success: false,
+                 message: "Internal server error"
+             })
+    }
+})
+
+
+
+app.get('/', (req, res) => {
+    try {
+        res.send("Welcome to the Product Management API!");
+    } catch (err) {
+        // Catch any unexpected server errors
+        console.error(err);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error."
+        });
+    }
 })
 
 app.listen(PORT, () => {
