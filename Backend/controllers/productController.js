@@ -21,7 +21,8 @@ const products = [
 ];
 let currerntId = 4;
 const generateId = () => {
-    return currerntId++;
+    let count = currerntId++
+    return count.toString() ;
 }
 
 exports.getProducts = (req, res) => {
