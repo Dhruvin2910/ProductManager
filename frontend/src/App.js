@@ -15,7 +15,7 @@ function App() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/product");
+        const response = await axios.get("https://productmanager-2k7p.onrender.com/product");
         console.log("Fetched products:", response.data); // Debugging log
         setProducts(response.data.data);
       } catch (err) {
@@ -29,7 +29,7 @@ function App() {
 
   const addProduct = async () => {
     try {
-      const response = await axios.post("http://localhost:8000/product", newProduct);
+      const response = await axios.post("https://productmanager-2k7p.onrender.com/product", newProduct);
       console.log("Added product:", response.data);
       setProducts([...products, response.data.data]);
       setNewProduct({ name: "", price: "", category: "" }); // Reset input fields
@@ -43,7 +43,7 @@ function App() {
 
   const deleteProduct = async (productId) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/product/${productId}`);
+      const response = await axios.delete(`https://productmanager-2k7p.onrender.com/product/${productId}`);
       console.log("Deleted product:", response.data);
       setProducts(products.filter((product) => product.id !== productId));
       toast.success("Product deleted successfully!"); // Show success toast
