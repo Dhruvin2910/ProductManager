@@ -12,26 +12,40 @@ function App() {
   });
   const [showModal, setShowModal] = useState(false); // State to handle modal visibility
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("https://productmanager-2k7p.onrender.com/product");
-        console.log("Fetched products:", response.data); // Debugging log
-        setProducts(response.data.data);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-        toast.error("Failed to load products!"); // Show error toast
-      }
-    };
+  // Fetch products function
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get("https://productmanager-2k7p.onrender.com/product");
+      console.log("Fetched products:", response.data); // Debugging log
+      setProducts(response.data.data);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      toast.error("Failed to load products!"); // Show error toast
+    }
+  };
 
-    fetchProducts();
-  }, []);
+  // Delete product function
+  const deleteProduct = async (productId) => {
+    try {
+      // Send the delete request to the backend
+      await axios.delete(`https://productmanager-2k7p.onrender.com/product/${productId}`);
+  
+      // Fetch the updated product list from the backend
+      fetchProducts(); // Ensure you re-fetch the products after deletion
+      toast.success("Product deleted successfully!"); // Show success toast
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      toast.error("Failed to delete product!"); // Show error toast
+    }
+  };
+  
 
+  // Add product function
   const addProduct = async () => {
     try {
       const response = await axios.post("https://productmanager-2k7p.onrender.com/product", newProduct);
       console.log("Added product:", response.data);
-      setProducts([...products, response.data.data]);
+      fetchProducts(); // Fetch products again after adding new product
       setNewProduct({ name: "", price: "", category: "" }); // Reset input fields
       toast.success("Product added successfully!"); // Show success toast
       setShowModal(false); // Close modal after adding product
@@ -41,17 +55,10 @@ function App() {
     }
   };
 
-  const deleteProduct = async (productId) => {
-    try {
-      const response = await axios.delete(`https://productmanager-2k7p.onrender.com/product/${productId}`);
-      console.log("Deleted product:", response.data);
-      setProducts(products.filter((product) => product.id !== productId));
-      toast.success("Product deleted successfully!"); // Show success toast
-    } catch (err) {
-      console.error("Error deleting product:", err);
-      toast.error("Failed to delete product!"); // Show error toast
-    }
-  };
+  // Fetch products on component mount
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   return (
     <>

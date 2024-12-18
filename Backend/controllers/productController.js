@@ -92,36 +92,43 @@ exports.postProduct = (req, res) => {
 }
 
 exports.deleteProduct = (req, res) => {
-    try{
+    try {
         const { id } = req.params;
 
-        //find product by indexby id
-        const productIndex = products.findIndex((product) => product.id === id);
-
-        if(productIndex === -1){
-            //product not found, return error
-            return res.status(404).json({
-                success:false,
-                message:"Product not found"
+        // Check if products array exists
+        if (!Array.isArray(products)) {
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error: products array is not available"
             });
         }
 
-        //remove the product from the array
+        // Find the product by id
+        const productIndex = products.findIndex((product) => product.id === id);
+
+        if (productIndex === -1) {
+            // Product not found
+            return res.status(404).json({
+                success: false,
+                message: "Product not found"
+            });
+        }
+
+        // Remove the product from the array
         const deletedProduct = products.splice(productIndex, 1);
 
-        //return success response with deleted products
+        // Return success response with deleted product
         res.status(200).json({
-            success:true,
-            message:"Product deleted successfully",
-            data:deletedProduct[0]
+            success: true,
+            message: "Product deleted successfully",
+            data: deletedProduct[0]
         });
-    }catch(err){
-         // Catch any unexpected server errors
-         console.log(err); // Log the error for debugging
-         res.status(500)
-             .json({
-                 success: false,
-                 message: "Internal server error"
-             })
+    } catch (err) {
+        // Catch any unexpected errors and log them
+        console.error("Error deleting product:", err); // More specific log
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
     }
-}
+};
