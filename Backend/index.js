@@ -7,11 +7,11 @@ require('dotenv').config(); // Load environment variables
 
 // Initialize app and set port
 const app = express();
+app.use(cors({ origin: 'https://productmanager291.netlify.app/' })); // Enable CORS for all routes
 const PORT = process.env.PORT || 8000;
 
 // Use middleware
 app.use(bodyParser.json()); // Parse incoming JSON requests
-app.use(cors()); // Enable CORS for all routes
 
 // Use product-related routes
 app.use('/', productRoutes);
