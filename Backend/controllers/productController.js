@@ -1,5 +1,5 @@
 //in memory to store products
-let products = [
+const products = [
     {
         "id": "1",
         "name": "Laptop",
