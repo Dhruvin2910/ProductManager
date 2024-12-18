@@ -1,8 +1,28 @@
-const { v4: uuidv4 } = require('uuid');
-
 //in memory to store products
-let products = [];
-const generateId = () => uuidv4(); // to generate unique id for each product
+let products = [
+    {
+        "id": "1",
+        "name": "Laptop",
+        "price": "1000",
+        "category": "Electronics"
+    },
+    {
+        "id": "2",
+        "name": "Shoes",
+        "price": "50",
+        "category": "Fashion"
+    },
+    {
+        "id": "3",
+        "name": "Watch",
+        "price": "200",
+        "category": "Accessories"
+    },
+];
+let currerntId = 4;
+const generateId = () => {
+    return currerntId++;
+}
 
 exports.getProducts = (req, res) => {
     try{
