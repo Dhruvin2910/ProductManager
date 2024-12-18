@@ -7,7 +7,19 @@ require('dotenv').config(); // Load environment variables
 
 // Initialize app and set port
 const app = express();
-app.use(cors({ origin: 'https://productmanager291.netlify.app/' })); // Enable CORS for all routes
+const allowedOrigins = ['https://productmanager291.netlify.app/']; // Correct origin without trailing slash
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true, // Allow cookies if needed
+})); // Enable CORS for all routes
 const PORT = process.env.PORT || 8000;
 
 // Use middleware
